@@ -10,6 +10,7 @@ image = 'tmp/tests.png'
 
 preprocess = "none"
 
+# Путь к файлу-обработчику
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 # загрузить образ и преобразовать его в оттенки серого
