@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings attr1="Атрибут1">
+    <text attr2="Атрибут2">Hello, world!</text>
+    <list attr3="Атрибут3">
+        <item attr4="Атрибут4">Текст1</item>
+        <item>2</item>
+        <item>3.0</item>
+    </list>
+</settings>
