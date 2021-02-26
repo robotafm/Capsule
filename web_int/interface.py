@@ -8,13 +8,14 @@ from flask import Flask, render_template
 # Flask init:
 app = Flask(__name__)
 
-
+# Main site page:
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# NOT WORK
+# NOT WORK CODE:
+# NOT WORK:
 def server_start(port=80):
     """
     Запуск сервера для отображения информации
@@ -23,16 +24,16 @@ def server_start(port=80):
     pass #do nothing
 
 
-# NOT WORK
+# NOT WORK:
 def server_stop():
     """
     Останавливает запущенный сервер
     """
     pass #do nothing
 
-# NOT WORK
+# NOT WORK:
 server_start(777)
 
-# Running constantly
+# Running constantly:
 # server_stop() 
 
