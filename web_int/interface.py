@@ -8,25 +8,7 @@ from flask import Flask, render_template
 
 # constants:
 LANG = "lang/rus.xml"
-"""
-main_title = "Проект [Капсула]"
-language = "Русский"
-flag_path = "/flags/rus.png</flag_path>"
-greeting = ("Здравствуйте! Здесь вы можете получить"
-           + " автоматическую медицинскую консультацию")
-warning = ("Обращаем Ваше внимание, что полученная"
-          + " информация не может быть использована в"
-          + " качестве основания для проведения самолечения."
-          + " Рассматривайте полученные сведения в качестве" 
-          + " альтернативы самостоятельного поиска информации"
-          + " в интернете и медицинской литературе.")
-invitation = "Пожалуйста, опишите свои симптомы в текстовом поле ниже:"
 
-admin_name = "Административная панель"
-resourse_monitor = "Монитор ресурсов"
-database = "База данных"
-main_page = "Главная страница"
-"""
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
 main_title = dom.getElementsByTagName("main_title")[0].childNodes[0].nodeValue
