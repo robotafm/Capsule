@@ -1,0 +1,12 @@
+<!doctype html>
+<!-- robotafm/Capsule/web_int/base.html
+    main page of the site -->
+
+<div align="left" width="99%"><a href="{{ url_for('admin_panel')}}">{% block admin_name %} {% endblock %}</a></div>
+
+<div align="center">
+    <h1>{% block main_title %} {% endblock %}</h1>
+    <div>{% block greeting %} {% endblock %}</div>
+    <div>{% block warning %} {% endblock %}</div>
+    <div>{% block invitation %} {% endblock %}</div>
+</div>

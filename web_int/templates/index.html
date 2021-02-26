@@ -1,7 +1,9 @@
-<!-- robotafm/Capsule/web_int/index.html
-    main page of the site -->
+<!-- robotafm/Capsule/web_int/index.html -->
+{% extends 'base.html' %}
 
-<div align="center">
-    <h1>Главная страница сайта</h1>
-    <div>Здесь будет отображаться сводная информация о работе системы</div>
-</div>
+{% block admin_name %} {{ admin_name }} {% endblock %}
+
+{% block main_title %} {{ main_title }} {% endblock %}
+{% block greeting %} {{ greeting }} {% endblock %}
+{% block warning %} {{ warning }} {% endblock %}
+{% block invitation %} {{ invitation }} {% endblock %}
