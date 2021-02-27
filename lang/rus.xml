@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Capsule/lang/rus.xml 
+	XML language file -->
+	
 <language>
 	<title>Русский</title>
-
 	<!-- main_page -->
 	<main_title>Проект "Капсула"</main_title>
 	<flag_path>/flags/rus.png</flag_path>
@@ -16,4 +17,20 @@
 	<resourse_monitor>Монитор ресурсов</resourse_monitor>
 	<database>База данных</database>
 	<main_page>Главная страница</main_page>
+
+	<!-- m_OCR module -->
+	<m_OCR_name>Модуль m_OCR</m_OCR_name>
+	<m_OCR_description>Предназначен для распознавания изображений с текстом (страниц книг, например) и преобразования их в HTML документы</m_OCR_description>
+
+	<!-- statuses -->
+	<status_OK>норма</status_OK>
+	<status_UP>запущен</status_UP>
+	<status_work>работает</status_work>
+	<status_error>ошибка</status_error>
+
+	<!-- buttons -->
+	<button_start>старт</button_start>
+	<button_stop>стоп</button_stop>
+	<button_restart>перезапустить</button_restart>
+
 </language>
