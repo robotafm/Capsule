@@ -1,0 +1,22 @@
+Установка БД и Pandas(скопировать в терминал):
+python -m pip install pandas
+
+Установка Flask и web-модулей (скопировать в терминал):
+python -m pip install flask
+python -m pip install flask-login
+python -m pip install flask-openid
+python -m pip install flask-mail
+python -m pip install sqlalchemy
+python -m pip install flask-sqlalchemy
+python -m pip install sqlalchemy-migrate
+python -m pip install flask-whooshalchemy
+python -m pip install flask-wtf
+python -m pip install pytz
+python -m pip install flask-babel
+python -m pip install flup
+
+Установка Python Image Library (PIL, pillow)
+pip install Pillow
+
+Установка OpenCV
+pip install opencv-python
