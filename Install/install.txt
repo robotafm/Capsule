@@ -20,3 +20,8 @@ pip install Pillow
 
 Установка OpenCV
 pip install opencv-python
+
+Установка pytesseract
+pip install pytesseract
+(Примечание: Необходимо установить бинарную библиотеку tesseract.exe
+с сайта https://github.com/UB-Mannheim/tesseract/wiki)
