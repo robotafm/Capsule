@@ -7,7 +7,7 @@ import xml.dom.minidom
 from flask import Flask, render_template
 
 # constants:
-LANG = "lang/rus.xml"
+LANG = "../lang/rus.xml"
 
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
