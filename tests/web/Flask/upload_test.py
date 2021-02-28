@@ -5,7 +5,11 @@ from flask import send_from_directory
 # If you need URL protection:
 #from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = r'C:\Data2\uploads'
+# For Linux:
+UPLOAD_FOLDER = '/home/pi/data'
+
+# For Windows:
+#UPLOAD_FOLDER = r'C:\Data2\uploads'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
