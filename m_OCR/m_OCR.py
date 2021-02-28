@@ -5,12 +5,12 @@
 
 # imports:
 import xml.dom.minidom
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, request
 
 # constants:
 LANG = "../lang/rus.xml"
 
-# FIX IT:
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
 
@@ -23,15 +23,27 @@ status_error = dom.getElementsByTagName("status_error")[0].childNodes[0].nodeVal
 button_start = dom.getElementsByTagName("button_start")[0].childNodes[0].nodeValue
 button_stop = dom.getElementsByTagName("button_stop")[0].childNodes[0].nodeValue
 button_restart = dom.getElementsByTagName("button_restart")[0].childNodes[0].nodeValue
+input_file="input_file"
+
+UPLOAD_FOLDER = r'C:\Data2\uploads'
 
 # Flask init:
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # m_OCR web page:
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        file = request.files[input_file]
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     return render_template(
         'index.html', 
         m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description
+        m_OCR_description=m_OCR_description,
+        button_start=button_start,
+        button_stop=button_stop,
+        button_restart=button_restart,
+        input_file=input_file
         )

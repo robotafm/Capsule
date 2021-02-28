@@ -6,3 +6,16 @@
     <h1>{% block m_OCR_name %} {% endblock %}</h1>
     <div>{% block m_OCR_description %} {% endblock %}</div>
 </div>
+<div align="center">
+	<form>
+		<button>{% block button_start %} {% endblock %}</button>
+		<button>{% block button_stop %} {% endblock %}</button>
+		<button>{% block button_restart %} {% endblock %}</button>
+	</form>
+</div>
+<div align="center">
+	<form enctype="multipart/form-data" method="post">
+	<p><input type="file" name="{% block input_file %} {% endblock %}">
+	<input type="submit" value="Отправить"></p>
+	</form> 
+</div>
