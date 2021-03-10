@@ -8,6 +8,8 @@ import xml.dom.minidom
 import os
 from flask import Flask, render_template, request
 
+import imgtoHTML
+
 # constants:
 LANG = "../lang/rus.xml"
 
@@ -45,5 +47,6 @@ def index():
         button_start=button_start,
         button_stop=button_stop,
         button_restart=button_restart,
-        input_file=input_file
+        input_file=input_file,
+        text_page=imgtoHTML.get_text(r"C:\Data2\uploads\tests.png")
         )
