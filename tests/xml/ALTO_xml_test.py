@@ -14,7 +14,7 @@ def find_all(a_str, sub):
 
 def add_div_tag(
                 text="",
-                class_="",
+                attribute="",
                 content="",
                 relative_level=0,
                 div_spacer=""
@@ -27,7 +27,7 @@ def add_div_tag(
         indexes = [0]
 
     text = (text[0:indexes[relative_level]]+
-            "<div "+class_+">"+
+            "<div "+attribute+">"+
             content+
             "</div>"+
             div_spacer+
@@ -59,7 +59,7 @@ text = ""
 
 text = add_div_tag(
     text, 
-    class_='width=\"'+page.width+'\" '+'height=\"'+page.height+'\"', 
+    attribute='width=\"'+page.width+'px\" '+'height=\"'+page.height+'px\"', 
     )
 
 lines_of_text = dom.getElementsByTagName("TextLine")
@@ -73,8 +73,8 @@ for line in lines_of_text:
     
     width = line.getAttribute("WIDTH")
     height = line.getAttribute("HEIGHT")
-    x = line.getAttribute("VPOS")
-    y = line.getAttribute("HPOS")
+    y = line.getAttribute("VPOS")
+    x = line.getAttribute("HPOS")
     
     words = line.getElementsByTagName("String")
 
@@ -85,54 +85,20 @@ for line in lines_of_text:
 
     text = add_div_tag(
         text,
+        attribute='style=\"position: absolute; top: '+y+'px; left: '+x+'px; font-size: '+height+'px;\"', 
         content=content,
         relative_level=line_index,
         div_spacer="\n"
         )
     content = ""
 
+# save output html
+f = open(output_file, "w")
+f.write(text)
+f.close()
 
 
-# text = add_div_tag(
-#     text, 
-#     class_='align=\"left\"', 
-#     content='BADABUM!',
-#     relative_level=1
-#     )
-
-# text = add_div_tag(
-#     text, 
-#     class_='align=\"right\"', 
-#     content='Oh!',
-#     relative_level=2
-#     )
-
-# text = add_div_tag(
-#     text, 
-#     class_='align=\"right\"', 
-#     content='Egege...',
-#     relative_level=3
-#     )
-
-print(text)
-
-# node2=dom2.getElementsByTagName("item")[0]
-# node3=dom3.getElementsByTagName("warning")[0]
-
-# print("value="+node1.childNodes[0].nodeValue)
-# print("attr="+node1.getAttribute("attr4"))
-
-# print("value="+node2.childNodes[0].nodeValue)
-# print("attr="+node2.getAttribute("attr4"))
-
-# print("value="+node3.childNodes[0].nodeValue)
-
-# # save output html
-# f = open(output_file, "w")
-# f.write(result_html)
-# f.close()
-
-
-
+#    font-family: Verdana, Arial, Helvetica, sans-serif; 
+#    font-size: 11pt; /* Размер шрифта в пунктах */ 
 
 #list(find_all('spam spam spam spam', 'spam')) # [0, 5, 10, 15]
