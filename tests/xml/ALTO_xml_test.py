@@ -41,7 +41,7 @@ class Page():
         self.height = height
 
 
-input_file = r'C:\Data2\OCR\alto.xml'
+input_file = r'C:\Data2\OCR\alto_page.xml'
 output_file = r'C:\Data2\OCR\result_from_alto_xml.html'
 
 dom = xml.dom.minidom.parse(input_file)

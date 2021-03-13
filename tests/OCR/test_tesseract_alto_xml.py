@@ -3,8 +3,8 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-filename = r'C:\Data2\OCR\text.png'
-output_file = r'C:\Data2\OCR\alto.xml'
+filename = r'C:\Data2\OCR\test_page.png'
+output_file = r'C:\Data2\OCR\alto_page.xml'
 
 # read the image
 img = cv2.imread(filename)
