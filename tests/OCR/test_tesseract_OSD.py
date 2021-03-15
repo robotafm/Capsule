@@ -3,8 +3,7 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-filename = r'C:\Data2\OCR\test_page.png'
-output_file = r'C:\Data2\OCR\alto_page.xml'
+filename = r'D:\Data\testdata\img\OCR\test_rotate.png'
 
 # read the image
 img = cv2.imread(filename)
@@ -18,11 +17,8 @@ img = cv2.imread(filename)
 # cv2.imshow("Bin", image_bin)
 
 # run tesseract, returning binary text ALTO xml
-alto_xml = pytesseract.image_to_alto_xml(img, lang='rus+eng') #use
+OSD = pytesseract.image_to_osd(img) #use
 
-# save output xml
-f = open(output_file, "wb")
-f.write(alto_xml)
-f.close()
+print(OSD)
 
 #input('pause…')

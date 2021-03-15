@@ -6,12 +6,13 @@
 # imports:
 import xml.dom.minidom
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 
 import imgtoHTML
 
 # constants:
 LANG = "../lang/rus.xml"
+UPLOAD_FOLDER = r'C:\Data2\uploads'
 
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
@@ -25,10 +26,9 @@ status_error = dom.getElementsByTagName("status_error")[0].childNodes[0].nodeVal
 button_start = dom.getElementsByTagName("button_start")[0].childNodes[0].nodeValue
 button_stop = dom.getElementsByTagName("button_stop")[0].childNodes[0].nodeValue
 button_restart = dom.getElementsByTagName("button_restart")[0].childNodes[0].nodeValue
+button_submit = dom.getElementsByTagName("button_submit")[0].childNodes[0].nodeValue
 input_file="input_file"
-
-UPLOAD_FOLDER = r'C:\Data2\uploads'
-
+    
 # Flask init:
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -39,6 +39,12 @@ def index():
     if request.method == 'POST':
         file = request.files[input_file]
         filename = file.filename
+
+        # Clear folder
+        directory = os.listdir(UPLOAD_FOLDER)
+        for data in directory:
+            os.remove(os.path.join(UPLOAD_FOLDER, data))
+
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     return render_template(
         'index.html', 
@@ -48,5 +54,6 @@ def index():
         button_stop=button_stop,
         button_restart=button_restart,
         input_file=input_file,
-        text_page=imgtoHTML.get_text(r"C:\Data2\uploads\tests.png")
+        button_submit=button_submit,
+        text_page=Markup(imgtoHTML.get_HTML(UPLOAD_FOLDER))
         )

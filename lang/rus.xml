@@ -23,14 +23,15 @@
 	<m_OCR_description>Предназначен для распознавания изображений с текстом (страниц книг, например) и преобразования их в HTML документы</m_OCR_description>
 
 	<!-- statuses -->
-	<status_OK>норма</status_OK>
-	<status_UP>запущен</status_UP>
-	<status_work>работает</status_work>
-	<status_error>ошибка</status_error>
+	<status_OK>Норма</status_OK>
+	<status_UP>Запущен</status_UP>
+	<status_work>Работает</status_work>
+	<status_error>Ошибка</status_error>
 
 	<!-- buttons -->
-	<button_start>старт</button_start>
-	<button_stop>стоп</button_stop>
-	<button_restart>перезапустить</button_restart>
+	<button_start>Старт</button_start>
+	<button_stop>Стоп</button_stop>
+	<button_restart>Перезапустить</button_restart>
+	<button_submit>Отправить</button_submit>
 
 </language>

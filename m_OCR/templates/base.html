@@ -1,24 +1,30 @@
 <!doctype html>
 <!-- robotafm/Capsule/m_OCR/templates/base.html
     m_ORC module web page -->
-
-<div align="center">
-    <h1>{% block m_OCR_name %} {% endblock %}</h1>
-    <div>{% block m_OCR_description %} {% endblock %}</div>
-</div>
-<div align="center">
-	<form>
-		<button>{% block button_start %} {% endblock %}</button>
-		<button>{% block button_stop %} {% endblock %}</button>
-		<button>{% block button_restart %} {% endblock %}</button>
-	</form>
-</div>
-<div align="center">
-	<form enctype="multipart/form-data" method="post">
-	<p><input type="file" name="{% block input_file %} {% endblock %}">
-	<input type="submit" value="Отправить"></p>
-	</form> 
-</div>
-<div>
-	{% block text_page %} {% endblock %}
-</div>
+<html>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<div align="center">
+		<h1>{% block m_OCR_name %} {% endblock %}</h1>
+		<div>{% block m_OCR_description %} {% endblock %}</div>
+		</div>
+		<div align="center">
+			<form>
+				<button>{% block button_start %} {% endblock %}</button>
+				<button>{% block button_stop %} {% endblock %}</button>
+				<button>{% block button_restart %} {% endblock %}</button>
+			</form>
+		</div>
+		<div align="center">
+			<form enctype="multipart/form-data" method="post">
+			<p><input type="file" name="{% block input_file %} {% endblock %}">
+			<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
+			</form> 
+		</div>
+		<div style="position: absolute; top: 150px">
+		{% block text_page %} {% endblock %}
+		</div>
+	</body>
+</html>
