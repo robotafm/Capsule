@@ -8,7 +8,7 @@ import xml.dom.minidom
 import os
 from flask import Flask, render_template, request, Markup
 
-import imgtoHTML
+import img_to_HTML
 
 # constants:
 LANG = "../lang/rus.xml"
@@ -55,5 +55,5 @@ def index():
         button_restart=button_restart,
         input_file=input_file,
         button_submit=button_submit,
-        text_page=Markup(imgtoHTML.get_HTML(UPLOAD_FOLDER))
+        text_page=Markup(img_to_HTML.get_HTML(UPLOAD_FOLDER))
         )
