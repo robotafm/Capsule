@@ -1,3 +1,8 @@
+# Capsule/imgtoHTML.py
+# Library for optical character recognition
+# use for convertion to HTML page from imgs
+# based on pytesseract
+
 import pytesseract
 import cv2
 import os
