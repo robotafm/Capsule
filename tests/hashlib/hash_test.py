@@ -1,6 +1,6 @@
 import hashlib
 
-filename = r"D:\Data\testdata\djvu\Vas2.djvu"
+filename = r"D:\Data\testdata\djvu\Vas.djvu"
 
 file = open(filename, "rb")
 hasher_md5 = hashlib.md5()
