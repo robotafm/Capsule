@@ -10,7 +10,7 @@ import os
 from flask import Flask, render_template
 
 # constants:
-LANG = "lang/rus.xml"
+LANG = "../lang/rus.xml"
 
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
@@ -22,8 +22,8 @@ app = Flask(__name__)
 
 # m_BD web page:
 @app.route('/')
-def index_database():
+def index():
     return render_template(
-        'index_database.html', 
+        'index.html', 
         m_BD_name=m_BD_name
         )

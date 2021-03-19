@@ -11,7 +11,7 @@ from sqlalchemy.orm import mapper
 from sqlalchemy.orm import sessionmaker
 
 # Создать БД sqlite в оперативной памяти:
-engine = create_engine('sqlite:///database.db', echo=False) # echo -> печать SQL запросов
+engine = create_engine(r'sqlite:///C:\Data2\database.db', echo=False) # echo -> печать SQL запросов
 metadata = MetaData()
 
 books_table = Table(
@@ -130,6 +130,13 @@ def add_book_to_database(
                          ):
     Session = sessionmaker(bind=engine)
     session = Session()
+
+    query = (session.query(Book.book_hash_sha3_512).filter(
+        Book.book_hash_sha3_512==book_hash_sha3_512)
+        )
+    if (query!=None):
+        #TODO: If book not exist, add new book
+        pass
     # Adding one entry:
     book = Book(
                 name, 

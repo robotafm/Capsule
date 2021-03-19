@@ -43,7 +43,7 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     server_hash_sha3_512 = None #TODO: get_current_server hash
 
 
-    book = BD_lib.Book(
+    book = BD_lib.add_book_to_database(
         name=name, 
         fullpath=fullpath, 
         ALTO_xml=ALTO_xml, 
