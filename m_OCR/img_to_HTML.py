@@ -3,10 +3,13 @@
 # use for convertion to HTML page from imgs
 # based on pytesseract
 
+import hashlib
 import pytesseract
 import cv2
 import os
 import xml.dom.minidom
+
+import Capsule.m_BD.BD_lib as BD_lib
 
 image_file = r'D:\Data\testdata\img\OCR\tests.png'
 alto_xml_file = r'D:\Data\testdata\xml\text_in_alto.xml'
@@ -24,10 +27,30 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     # Run tesseract, returning binary text ALTO xml
     alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng') #use
 
-    # Save output xml
+    # Save output xml to file
     f = open(output_file, "wb")
     f.write(alto_xml)
     f.close()
+
+    # Save output xml to database
+    hasher_sha3_512 = hashlib.sha3_512()
+    hasher_sha3_512.update(alto_xml)
+
+    name = os.path.basename(input_file)
+    fullpath = os.path.dirname(input_file)
+    ALTO_xml = alto_xml
+    book_hash_sha3_512 = hasher_sha3_512.hexdigest()
+    server_hash_sha3_512 = None #TODO: get_current_server hash
+
+
+    book = BD_lib.Book(
+        name=name, 
+        fullpath=fullpath, 
+        ALTO_xml=ALTO_xml, 
+        book_hash_sha3_512=book_hash_sha3_512, 
+        server_hash_sha3_512=server_hash_sha3_512
+        )
+
     return(alto_xml)
 
 
@@ -150,6 +173,7 @@ def get_HTML(folder):
     directory = os.listdir(folder)
     if(directory!=[]):
         file = directory[0]
+        # If file is image file
         if((file.find(".xml")<0) and (file.find(".html")<0)):
             get_xml(
                 input_file=os.path.join(folder, file),

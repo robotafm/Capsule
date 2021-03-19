@@ -8,7 +8,7 @@ import xml.dom.minidom
 import os
 from flask import Flask, render_template, request, Markup
 
-import img_to_HTML
+import Capsule.m_OCR.img_to_HTML as img_to_HTML
 
 # constants:
 LANG = "../lang/rus.xml"
@@ -39,13 +39,13 @@ def index():
     if request.method == 'POST':
         file = request.files[input_file]
         filename = file.filename
-
         # Clear folder
         directory = os.listdir(UPLOAD_FOLDER)
         for data in directory:
             os.remove(os.path.join(UPLOAD_FOLDER, data))
-
+        # Save new file
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
     return render_template(
         'index.html', 
         m_OCR_name=m_OCR_name, 
