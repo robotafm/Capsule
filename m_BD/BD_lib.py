@@ -10,7 +10,7 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.orm import mapper
 from sqlalchemy.orm import sessionmaker
 
-# Создать БД sqlite в оперативной памяти:
+# Создать БД sqlite:
 engine = create_engine(r'sqlite:///C:\Data2\database.db', echo=False) # echo -> печать SQL запросов
 metadata = MetaData()
 
@@ -128,6 +128,9 @@ def add_book_to_database(
                          server_hash_sha3_512,
                          engine=engine
                          ):
+    """
+    Add new book to database (in ALTO xml)
+    """
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -150,13 +153,28 @@ def add_book_to_database(
     session.commit()
     return(book)
 
-# def get_book_from_database(engine=engine):
-#     book = None
-#     return(book)
+def get_book_from_database(book_hash, engine=engine):
+    """
+    Get book from database (in ALTO xml)
+    """
 
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    book = None
+    for data in session.query(Book).filter(Book.book_hash_sha3_512.in_(book_hash)).all():
+        book = data
+    return(book)
+
+def main():
+    # TODO: function get_book_from_database test
+    pass
+    
 # def add_server_to_database():
 #     pass
 
 # def get_server_from_database():
 #     pass
 
+if __name__ == '__main__':
+    main()

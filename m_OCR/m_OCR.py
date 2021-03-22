@@ -14,6 +14,11 @@ import Capsule.m_OCR.img_to_HTML as img_to_HTML
 LANG = "../lang/rus.xml"
 UPLOAD_FOLDER = r'C:\Data2\uploads'
 
+# Clear folder
+directory = os.listdir(UPLOAD_FOLDER)
+for data in directory:
+    os.remove(os.path.join(UPLOAD_FOLDER, data))
+
 # XML: load text strings from language file
 dom = xml.dom.minidom.parse(LANG)
 
@@ -39,10 +44,6 @@ def index():
     if request.method == 'POST':
         file = request.files[input_file]
         filename = file.filename
-        # Clear folder
-        directory = os.listdir(UPLOAD_FOLDER)
-        for data in directory:
-            os.remove(os.path.join(UPLOAD_FOLDER, data))
         # Save new file
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 

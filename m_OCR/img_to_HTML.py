@@ -29,7 +29,24 @@ def get_current_server_hash():
 def get_xml(input_file=image_file, output_file=alto_xml_file):
     """
     Converting img file to ALTO xml with tesseract library.
+    Save result ALTO xml to file and database
     """
+
+    hasher_sha3_512 = hashlib.sha3_512()
+    file = open(input_file, "rb")
+    buf = file.read()
+    hasher_sha3_512.update(buf)
+    file.close()
+
+    # If book in database
+    book = BD_lib.get_book_from_database(book_hash=hasher_sha3_512.hexdigest())
+    if (book!=None):
+        # Save output xml to file
+        f = open(output_file, "wb")
+        f.write(book.ALTO_xml)
+        f.close()
+        return(book.ALTO_xml)
+
     # Tesseract command file in installation directory
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     # Load image
@@ -44,14 +61,11 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     f.close()
 
     # Save output xml to database
-    hasher_sha3_512 = hashlib.sha3_512()
-    hasher_sha3_512.update(alto_xml)
-
     name = os.path.basename(input_file)
     fullpath = os.path.dirname(input_file)
     ALTO_xml = alto_xml
     book_hash_sha3_512 = hasher_sha3_512.hexdigest()
-    server_hash_sha3_512 = None #TODO: get_current_server_hash
+    server_hash_sha3_512 = get_current_server_hash()
 
 
     book = BD_lib.add_book_to_database(
@@ -63,7 +77,6 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         )
 
     return(alto_xml)
-
 
 
 def find_all(a_str, sub):
