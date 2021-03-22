@@ -7,6 +7,8 @@ import hashlib
 import pytesseract
 import cv2
 import os
+import sys
+import socket
 import xml.dom.minidom
 
 import Capsule.m_BD.BD_lib as BD_lib
@@ -14,6 +16,15 @@ import Capsule.m_BD.BD_lib as BD_lib
 image_file = r'D:\Data\testdata\img\OCR\tests.png'
 alto_xml_file = r'D:\Data\testdata\xml\text_in_alto.xml'
 result_file = r'D:\Data\testdata\html\result.html'
+
+def get_current_server_hash():
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    platform = sys.platform
+    hasher_sha3_512 = hashlib.sha3_512()
+    text = (hostname+'|'+ip_address+'|'+platform).encode()
+    hasher_sha3_512.update(text)
+    return(hasher_sha3_512.hexdigest())
 
 def get_xml(input_file=image_file, output_file=alto_xml_file):
     """
@@ -40,7 +51,7 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     fullpath = os.path.dirname(input_file)
     ALTO_xml = alto_xml
     book_hash_sha3_512 = hasher_sha3_512.hexdigest()
-    server_hash_sha3_512 = None #TODO: get_current_server hash
+    server_hash_sha3_512 = None #TODO: get_current_server_hash
 
 
     book = BD_lib.add_book_to_database(

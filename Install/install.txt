@@ -1,7 +1,7 @@
-Установка БД и Pandas(скопировать в терминал):
+РЈСЃС‚Р°РЅРѕРІРєР° Р‘Р” Рё Pandas(СЃРєРѕРїРёСЂРѕРІР°С‚СЊ РІ С‚РµСЂРјРёРЅР°Р»):
 python -m pip install pandas
 
-Установка Flask и web-модулей (скопировать в терминал):
+РЈСЃС‚Р°РЅРѕРІРєР° Flask Рё web-РјРѕРґСѓР»РµР№:
 python -m pip install flask
 python -m pip install flask-login
 python -m pip install flask-openid
@@ -15,13 +15,16 @@ python -m pip install pytz
 python -m pip install flask-babel
 python -m pip install flup
 
-Установка Python Image Library (PIL, pillow)
+РЈСЃС‚Р°РЅРѕРІРєР° Python Image Library (PIL, pillow)
 pip install Pillow
 
-Установка OpenCV
+РЈСЃС‚Р°РЅРѕРІРєР° OpenCV
 pip install opencv-python
 
-Установка pytesseract
+РЈСЃС‚Р°РЅРѕРІРєР° pytesseract
 pip install pytesseract
-(Примечание: Необходимо установить бинарную библиотеку tesseract.exe
-с сайта https://github.com/UB-Mannheim/tesseract/wiki)
+(РџСЂРёРјРµС‡Р°РЅРёРµ: РќРµРѕР±С…РѕРґРёРјРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РёРЅР°СЂРЅСѓСЋ Р±РёР±Р»РёРѕС‚РµРєСѓ tesseract.exe
+СЃ СЃР°Р№С‚Р° https://github.com/UB-Mannheim/tesseract/wiki)
+
+РЈСЃС‚Р°РЅРѕРІРєР° sqlalchemy
+pip install SQLAlchemy
