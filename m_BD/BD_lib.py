@@ -162,13 +162,17 @@ def get_book_from_database(book_hash, engine=engine):
     session = Session()
 
     book = None
-    for data in session.query(Book).filter(Book.book_hash_sha3_512.in_(book_hash)).all():
+    for data in session.query(Book).filter_by(book_hash_sha3_512=book_hash): 
         book = data
     return(book)
 
 def main():
-    # TODO: function get_book_from_database test
-    pass
+    hash_sum = "640a494be39a7bfc465c79b3e65cb0b479df8c57c33abbfb72354de215f65b1fdf39a9e75749582ec1c3ca686b840af8d61d030261485e0bbafb40ffbb1eef6f"
+    book = get_book_from_database(hash_sum)
+    if (book!=None):
+        print(book.name)
+    else:
+        print("Not found...")
     
 # def add_server_to_database():
 #     pass
