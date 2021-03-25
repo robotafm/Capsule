@@ -28,3 +28,6 @@ pip install pytesseract
 
 Установка sqlalchemy
 pip install SQLAlchemy
+
+Установка NLP natasha
+pip install natasha
