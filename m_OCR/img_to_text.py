@@ -1,7 +1,8 @@
-# Capsule/imgtoHTML.py
+# Capsule/img_to_text.py
 # Library for optical character recognition
-# use for convertion to HTML page from imgs
-# based on pytesseract
+# use for convertion pages from images to ALTO XML 
+# and from ALTO XML to HTML. 
+# Based on pytesseract.
 
 import hashlib
 import pytesseract
@@ -17,6 +18,7 @@ image_file = r'D:\Data\testdata\img\OCR\tests.png'
 alto_xml_file = r'D:\Data\testdata\xml\text_in_alto.xml'
 result_file = r'D:\Data\testdata\html\result.html'
 
+
 def get_current_server_hash():
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
@@ -26,18 +28,17 @@ def get_current_server_hash():
     hasher_sha3_512.update(text)
     return(hasher_sha3_512.hexdigest())
 
+
 def get_xml(input_file=image_file, output_file=alto_xml_file):
     """
     Converting img file to ALTO xml with tesseract library.
     Save result ALTO xml to file and database
     """
-
     hasher_sha3_512 = hashlib.sha3_512()
     file = open(input_file, "rb")
     buf = file.read()
     hasher_sha3_512.update(buf)
     file.close()
-
     # If book in database
     book = BD_lib.get_book_from_database(book_hash=hasher_sha3_512.hexdigest())
     if (book!=None):
@@ -46,28 +47,22 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         f.write(book.ALTO_xml)
         f.close()
         return(book.ALTO_xml)
-
     # Tesseract command file in installation directory
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     # Load image
     image = cv2.imread(input_file)
-
     # Run tesseract, returning binary text ALTO xml
     alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng') #use
-
     # Save output xml to file
     f = open(output_file, "wb")
     f.write(alto_xml)
     f.close()
-
     # Save output xml to database
     name = os.path.basename(input_file)
     fullpath = os.path.dirname(input_file)
     ALTO_xml = alto_xml
     book_hash_sha3_512 = hasher_sha3_512.hexdigest()
     server_hash_sha3_512 = get_current_server_hash()
-
-
     book = BD_lib.add_book_to_database(
         name=name, 
         fullpath=fullpath, 
@@ -75,7 +70,6 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         book_hash_sha3_512=book_hash_sha3_512, 
         server_hash_sha3_512=server_hash_sha3_512
         )
-
     return(alto_xml)
 
 

@@ -4,7 +4,7 @@ import os
 with tempfile.NamedTemporaryFile() as fp:
     print(fp.name)  # путь к файлу
     fp.write(b'Hello world!')
-    fp.seek(0)
+    fp.seek(0) # Перемещаемся к 0-му байту от начала файла.
     print(fp.read())
 
 # Указание метод открытия, по умолчанию "w+b"

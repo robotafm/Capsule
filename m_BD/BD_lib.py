@@ -2,7 +2,7 @@
 # A library with functions for accessing to
 # the database and functions for controlling 
 # other modules (start, stop, and so on). 
-# Based on liteSQL.
+# Based on SQLalchemy.
 
 # imports:
 from sqlalchemy import create_engine
@@ -108,6 +108,9 @@ def stop_module(id):
     return(True)
 
 def pause_module(id):
+    return(True)
+
+def resume_module(id):
     return(True)
 
 def is_module_run(id):
