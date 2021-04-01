@@ -96,45 +96,37 @@ def add_div_tag(
     Add new div tag with content and attributes 
     (width, heght, style etc.) to HTML code.
     """
-
     if(relative_level!=0):
         indexes = list(find_all(text,'</div>'))
         relative_level -= 1 # Array element offset 
     else:
         indexes = [0]
-
     text = (text[0:indexes[relative_level]]+
             "<div "+attribute+">"+
             content+
             "</div>"+
             div_spacer+
             text[indexes[relative_level]:])
-            
     return(text)
 
+
 class Page():
-    def __init__(self, width=0, height=0):
+    def __init__(self, number=0, width=0, height=0, alto_xml=None):
+        self.number = number
         self.width = width
         self.height = height
+        self.alto_xml = alto_xml
 
-
-
-def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file):
+def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file, page_number=1):
     """ 
     Convertion function from ALTO xml to HTML page (TODO:pages).
     """
-
-
     dom = xml.dom.minidom.parse(input_file)
-
-    page = Page()
-
-    page.width = dom.getElementsByTagName("Page")[0].getAttribute("WIDTH")
-    page.height = dom.getElementsByTagName("Page")[0].getAttribute("HEIGHT")
-
+    page = Page(number=page_number)
+    page.width = dom.getElementsByTagName("Page")[page.number-1].getAttribute("WIDTH")
+    page.height = dom.getElementsByTagName("Page")[page.number-1].getAttribute("HEIGHT")
     # Empty new text
     text = ""
-
     text = add_div_tag(
         text, 
         attribute=('width=\"'+page.width+'px\" '+'height=\"'+page.height+'px\"'+
