@@ -1,4 +1,5 @@
 import xml.dom.minidom
+import codecs
 
 input_file = r'D:\Data\testdata\xml\two_pages_in_alto.xml'
 output_file = r'C:\Data2\OCR\result_from_alto_xml.html'
@@ -62,17 +63,30 @@ def add_page_to_alto_xml(input_file=input_file):
     newexpertise = doc.createElement("expertise")
     newexpertise.setAttribute("name", "BigData")
     doc.firstChild.appendChild(newexpertise)
-    print (" ")
-
     expertise = doc.getElementsByTagName("expertise")
     print ("%d expertise:" % expertise.length)
     for skill in expertise:
         print (skill.getAttribute("name"))
 
     #TODO: get page xml text from file
-    print(doc.getElementsByTagName("Page"))
+    with codecs.open(input_file, "w", "utf-8") as xml_file:
+        # print("expertise=", expertise[0].writexml(xml_file))
+        print("doc=", doc.writexml(xml_file, encoding="utf-8"))
 
-
+def add_page_to_alto_xml(input_file=input_file):
+    # use the parse() function to load and parse an XML file
+    doc = xml.dom.minidom.parse(input_file);
+    # create a new XML tag and add it into the document
+    newpage = doc.createElement("Page")
+    newpage.setAttribute("WIDTH", "111")
+    newpage.setAttribute("HEIGHT", "222")
+    newpage.setAttribute("PHYSICAL_IMG_NR", "3")
+    newpage.setAttribute("ID", "page_2")
+    doc.getElementsByTagName("Layout")[0].appendChild(newpage)
+    #TODO: get page xml text from file
+    with codecs.open(input_file, "w", "utf-8") as xml_file:
+        # print("expertise=", expertise[0].writexml(xml_file))
+        print("doc=", doc.writexml(xml_file, encoding="utf-8"))
 
 # dom = xml.dom.minidom.parse(input_file)
 # page_number = 1

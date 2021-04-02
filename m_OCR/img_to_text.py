@@ -11,12 +11,16 @@ import os
 import sys
 import socket
 import xml.dom.minidom
+import tempfile
+import time
 
 import Capsule.m_BD.BD_lib as BD_lib
 
 image_file = r'D:\Data\testdata\img\OCR\tests.png'
 alto_xml_file = r'D:\Data\testdata\xml\text_in_alto.xml'
 result_file = r'D:\Data\testdata\html\result.html'
+
+Ddjvu_cmd = r'C:\"Program Files (x86)"\DjVuLibre\ddjvu.exe -format=tiff -eachpage -skip'
 
 
 def get_current_server_hash():
@@ -28,10 +32,83 @@ def get_current_server_hash():
     hasher_sha3_512.update(text)
     return(hasher_sha3_512.hexdigest())
 
+def convert_djvu_to_tiff(input_file, folder):
+    """
+    Function for convertion .djvu files to .tiff (multipage)
+    """
+    output_file = os.path.join(folder, "page%d.tiff") # %d -> page number 
+                                                      # (if -eachpage in Ddjvu_cmd)
+    # Ddjvu command:
+    comm = Ddjvu_cmd + " " + input_file + " " + output_file
+    #Пробуем запустить конвертацию из Djvu в Tiff
+    os.system(comm)
+
+
+def convert_djvu_to_xml(input_file=image_file):
+    """
+    Converting djvu to ALTO xml.
+    """
+    alto_xml = None
+    with tempfile.TemporaryDirectory() as temp_folder:
+        convert_djvu_to_tiff(input_file, temp_folder)
+        # time.sleep(10) #TODO: replace to subprocess check
+        filelist = os.listdir(temp_folder)
+        for file in filelist:
+            path = os.path.join(temp_folder, file)
+            alto_xml = convert_file_to_xml(path)
+    return(alto_xml)
+
+def convert_file_to_xml(input_file=image_file):
+    """
+    Converting file to ALTO xml.
+    Uses convert_djvu_to_xml() and convert_pdf_to_xml().
+    """
+
+    # If image file:
+    # Windows bitmaps - *.bmp, *.dib
+    # JPEG files - *.jpeg, *.jpg, *.jpe
+    # JPEG 2000 files - *.jp2
+    # Portable Network Graphics - *.png
+    # WebP - *.webp
+    # Portable image format - *.pbm, *.pgm, *.ppm *.pxm, *.pnm
+    # Sun rasters - *.sr, *.ras
+    # TIFF files - *.tiff, *.tif
+    # OpenEXR Image files - *.exr
+    # Radiance HDR - *.hdr, *.pic
+    valid_image_extensions = [
+                             ".bmp", ".dib",
+                             ".jpeg", ".jpg", ".jpe",
+                             ".jp2", 
+                             ".png",
+                             ".webp"
+                             ".pbm", ".pgm", ".ppm", 
+                             ".sr", ".ras", 
+                             ".tiff", ".tif",
+                             ".exr",
+                             ".hdr", ".pic"
+                             ]
+    extention = os.path.splitext(input_file)[1].lower()
+    if extention in valid_image_extensions:
+        # Tesseract command file in installation directory
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+        # Load image
+        image = cv2.imread(input_file)
+        # Run tesseract, returning binary text ALTO xml
+        alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng') #use
+        return(alto_xml)
+    elif extention == ".pdf":
+        pass
+    elif (extention == ".djvu") or (extention == ".djv"):
+        alto_xml = convert_djvu_to_xml(input_file)
+        return(alto_xml)
+    else:
+        pass
+
 
 def get_xml(input_file=image_file, output_file=alto_xml_file):
     """
-    Converting img file to ALTO xml with tesseract library.
+    Get book in ALTO xml from database (if exist) or convertation 
+    function (if not).
     Save result ALTO xml to file and database
     """
     hasher_sha3_512 = hashlib.sha3_512()
@@ -47,12 +124,8 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         f.write(book.ALTO_xml)
         f.close()
         return(book.ALTO_xml)
-    # Tesseract command file in installation directory
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    # Load image
-    image = cv2.imread(input_file)
-    # Run tesseract, returning binary text ALTO xml
-    alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng') #use
+    # If not
+    alto_xml = convert_file_to_xml(input_file)
     # Save output xml to file
     f = open(output_file, "wb")
     f.write(alto_xml)
