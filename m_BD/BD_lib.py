@@ -22,7 +22,8 @@ books_table = Table(
     Column('fullpath', String),
     Column('ALTO_xml', String),
     Column('book_hash_sha3_512', String),
-    Column('server_hash_sha3_512', String) # Instead of the server name.
+    Column('server_hash_sha3_512', String), # Instead of the server name.
+    Column('page_number', Integer)
     )
 
 
@@ -33,22 +34,40 @@ class Book(object):
                 fullpath, 
                 ALTO_xml, 
                 book_hash_sha3_512, 
-                server_hash_sha3_512
+                server_hash_sha3_512,
+                page_number
                 ):
         self.name = name
         self.fullpath = fullpath
         self.ALTO_xml = ALTO_xml
         self.book_hash_sha3_512 = book_hash_sha3_512
         self.server_hash_sha3_512 = server_hash_sha3_512
+        self.page_number = 0
 
     def __repr__(self):
-        return "<Book('%s','%s', '%s', '%s', '%s')>" % (
+        return "<Book('%s','%s', '%s', '%s', '%s', '%s')>" % (
             self.name, 
             self.fullpath, 
             self.ALTO_xml, 
             self.hash_sha3_512, 
-            self.server_hash_sha3_512
+            self.server_hash_sha3_512,
+            self.page_number
             )
+
+    def add_page(self, alto_xml_page, page_number=None):
+        """
+        Add new page to book or replace old.
+        """
+        if page_number == None:
+            page_number = self.page_number + 1
+            self.page_number = page_number
+        # TODO: add new page to alto xml
+
+    def get_page(self, page_number=1):
+        """
+        Get page from database in alto xml format.
+        """
+        pass
 
 
 servers_table = Table(
@@ -129,6 +148,7 @@ def add_book_to_database(
                          ALTO_xml, 
                          book_hash_sha3_512, 
                          server_hash_sha3_512,
+                         page_number,
                          engine=engine
                          ):
     """
@@ -149,12 +169,14 @@ def add_book_to_database(
                 fullpath, 
                 ALTO_xml, 
                 book_hash_sha3_512, 
-                server_hash_sha3_512
+                server_hash_sha3_512,
+                page_number
                 )
     session.add(book)
     # Saving all changes in the database: 
     session.commit()
     return(book)
+
 
 def get_book_from_database(book_hash, engine=engine):
     """

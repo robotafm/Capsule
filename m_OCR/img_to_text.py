@@ -13,6 +13,7 @@ import socket
 import xml.dom.minidom
 import tempfile
 import time
+import subprocess as sp
 
 import Capsule.m_BD.BD_lib as BD_lib
 
@@ -24,6 +25,10 @@ Ddjvu_cmd = r'C:\"Program Files (x86)"\DjVuLibre\ddjvu.exe -format=tiff -eachpag
 
 
 def get_current_server_hash():
+    """
+    Get sha3_512 hash sum of current server from hostname, 
+    ip-adress and platform.
+    """
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
     platform = sys.platform
@@ -34,34 +39,84 @@ def get_current_server_hash():
 
 def convert_djvu_to_tiff(input_file, folder):
     """
-    Function for convertion .djvu files to .tiff (multipage)
+    Function for convertion .djvu file to .tiff (each page in diffrent file)
     """
     output_file = os.path.join(folder, "page%d.tiff") # %d -> page number 
                                                       # (if -eachpage in Ddjvu_cmd)
-    # Ddjvu command:
-    comm = Ddjvu_cmd + " " + input_file + " " + output_file
-    #Пробуем запустить конвертацию из Djvu в Tiff
-    os.system(comm)
+    dirpath = r'C:\Program Files (x86)\DjVuLibre'
+    filename = r'ddjvu.exe'
+    cmd_args = []
+    cmd_args.append(os.path.join(dirpath,filename))
+    cmd_args.append('-format=tiff')
+    cmd_args.append('-eachpage')
+    cmd_args.append('-skip')
+    cmd_args.append(input_file)
+    cmd_args.append(output_file)
+    # Run process
+    child = sp.Popen(cmd_args)
+
+def add_page_to_xml(alto_xml, alto_xml_page, page_number=0):
+    """
+    Add new page to end of alto_xml or replace old page.
+    """    
+    book_dom = xml.dom.minidom.parse(alto_xml)
+    page_dom = xml.dom.minidom.parse(alto_xml_page)
+    page = page_dom.getElementsByTagName("Page")[page.number-1]
+    # Find last page
+    if(page_number==0):
+        page_number = book_dom.getElementsByTagName("Page").length
+        # and add page to end
+        book_dom.getElementsByTagName("Layout").appendChild(page)
+    # If page is not last page
+    else:
+        old_page = book_dom.getElementsByTagName("Page")[page_number-1]
+        book_dom.getElementsByTagName("Layout").replaceChild(page, old_page)
+    page.setAttribute("ID", 'page_%d' % page_number)
+    return(book_dom.toxml(encoding="utf-8"))
 
 
 def convert_djvu_to_xml(input_file=image_file):
     """
     Converting djvu to ALTO xml.
     """
-    alto_xml = None
-    with tempfile.TemporaryDirectory() as temp_folder:
-        convert_djvu_to_tiff(input_file, temp_folder)
-        # time.sleep(10) #TODO: replace to subprocess check
-        filelist = os.listdir(temp_folder)
-        for file in filelist:
-            path = os.path.join(temp_folder, file)
-            alto_xml = convert_file_to_xml(path)
-    return(alto_xml)
+    # If book in database       
+    hasher_sha3_512 = hashlib.sha3_512()
+    file = open(input_file, "rb")
+    buf = file.read()
+    hasher_sha3_512.update(buf)
+    file.close()
+    book = BD_lib.get_book_from_database(book_hash=hasher_sha3_512.hexdigest())
+    if (book!=None):
+        return(1)
+    else:
+        # Create a multi-page ALTO xml document. 
+        alto_xml = None
+        with tempfile.TemporaryDirectory() as temp_folder:
+            convert_djvu_to_tiff(input_file, temp_folder)
+            filelist = os.listdir(temp_folder)
+            for file in filelist:
+                path = os.path.join(temp_folder, file)
+                alto_xml_page = convert_file_to_xml(path)
+                alto_xml = add_page_to_xml(alto_xml, alto_xml_page)
+        # Save output xml to database
+        name = os.path.basename(input_file)
+        fullpath = os.path.dirname(input_file)
+        ALTO_xml = alto_xml
+        book_hash_sha3_512 = hasher_sha3_512.hexdigest()
+        server_hash_sha3_512 = get_current_server_hash()
+        book = BD_lib.add_book_to_database(
+            name=name, 
+            fullpath=fullpath, 
+            ALTO_xml=ALTO_xml, 
+            book_hash_sha3_512=book_hash_sha3_512, 
+            server_hash_sha3_512=server_hash_sha3_512
+            )
+
 
 def convert_file_to_xml(input_file=image_file):
     """
-    Converting file to ALTO xml.
-    Uses convert_djvu_to_xml() and convert_pdf_to_xml().
+    Converting image files to ALTO xml and
+    use convert_djvu_to_xml() and convert_pdf_to_xml().
     """
 
     # If image file:
@@ -94,7 +149,7 @@ def convert_file_to_xml(input_file=image_file):
         # Load image
         image = cv2.imread(input_file)
         # Run tesseract, returning binary text ALTO xml
-        alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng') #use
+        alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng')
         return(alto_xml)
     elif extention == ".pdf":
         pass
@@ -141,7 +196,8 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         fullpath=fullpath, 
         ALTO_xml=ALTO_xml, 
         book_hash_sha3_512=book_hash_sha3_512, 
-        server_hash_sha3_512=server_hash_sha3_512
+        server_hash_sha3_512=server_hash_sha3_512,
+        page_number=1 #TODO: multipage
         )
     return(alto_xml)
 
@@ -278,8 +334,14 @@ def main():
     Just convertion from default image file to default HTML 
     file (and default ALTO xml file).
     """
-    get_xml()
-    convert_xml_to_HTML()
+    # get_xml()
+    # convert_xml_to_HTML()
+
+
+    convert_file_to_xml()
+        # with codecs.open(input_file, "w", "utf-8") as xml_file:
+        # # print("expertise=", expertise[0].writexml(xml_file))
+        # print("doc=", doc.writexml(xml_file, encoding="utf-8"))
 
 
 if __name__ == '__main__':

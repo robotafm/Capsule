@@ -2,14 +2,16 @@
 
 import string
 
+text = "TExt"
+
 #Открываем файл
-f = open('tmp/text.txt', 'r')
+#f = open('tmp/text.txt', 'r')
 
 #Считываем текст
-text = f.read()
+#text = f.read()
 
 #Закрываем файл
-f.close()
+#f.close()
 
 #Переводим текст в нижний регистр
 text = text.lower()
@@ -29,4 +31,5 @@ text = "".join([ch for ch in text if ch not in spec_chars])
 
 print (text)
 
+print('%d %s, %d %s' % (6, 'bananas', 10, 'lemons'))
 
