@@ -72,7 +72,10 @@ def add_page_to_xml(alto_xml, alto_xml_page, page_number=0):
         old_page = book_dom.getElementsByTagName("Page")[page_number-1]
         book_dom.getElementsByTagName("Layout").replaceChild(page, old_page)
     page.setAttribute("ID", 'page_%d' % page_number)
-    return(book_dom.toxml(encoding="utf-8"))
+    return(
+        book_dom.toxml(encoding="utf-8"), 
+        book_dom.getElementsByTagName("Page").length
+        )
 
 
 def convert_djvu_to_xml(input_file=image_file):
@@ -87,17 +90,18 @@ def convert_djvu_to_xml(input_file=image_file):
     file.close()
     book = BD_lib.get_book_from_database(book_hash=hasher_sha3_512.hexdigest())
     if (book!=None):
-        return(1)
+        return(book.ALTO_xml)
     else:
         # Create a multi-page ALTO xml document. 
         alto_xml = None
+        page_number = 0
         with tempfile.TemporaryDirectory() as temp_folder:
             convert_djvu_to_tiff(input_file, temp_folder)
             filelist = os.listdir(temp_folder)
             for file in filelist:
                 path = os.path.join(temp_folder, file)
                 alto_xml_page = convert_file_to_xml(path)
-                alto_xml = add_page_to_xml(alto_xml, alto_xml_page)
+                alto_xml, page_number = add_page_to_xml(alto_xml, alto_xml_page)
         # Save output xml to database
         name = os.path.basename(input_file)
         fullpath = os.path.dirname(input_file)
@@ -109,7 +113,8 @@ def convert_djvu_to_xml(input_file=image_file):
             fullpath=fullpath, 
             ALTO_xml=ALTO_xml, 
             book_hash_sha3_512=book_hash_sha3_512, 
-            server_hash_sha3_512=server_hash_sha3_512
+            server_hash_sha3_512=server_hash_sha3_512,
+            page_number=page_number
             )
 
 
