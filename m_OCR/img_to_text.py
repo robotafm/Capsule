@@ -59,6 +59,13 @@ def add_page_to_xml(alto_xml, alto_xml_page, page_number=0):
     """
     Add new page to end of alto_xml or replace old page.
     """    
+    # If book empty
+    if (alto_xml == None):
+        return(
+            alto_xml_page.decode('utf-8'),
+            1 # 1 page in book
+            )
+    # If not
     book_dom = xml.dom.minidom.parse(alto_xml)
     page_dom = xml.dom.minidom.parse(alto_xml_page)
     page = page_dom.getElementsByTagName("Page")[page.number-1]
@@ -97,11 +104,17 @@ def convert_djvu_to_xml(input_file=image_file):
         page_number = 0
         with tempfile.TemporaryDirectory() as temp_folder:
             convert_djvu_to_tiff(input_file, temp_folder)
+            time.sleep(15) #TODO: wait subprocess end
             filelist = os.listdir(temp_folder)
             for file in filelist:
                 path = os.path.join(temp_folder, file)
                 alto_xml_page = convert_file_to_xml(path)
                 alto_xml, page_number = add_page_to_xml(alto_xml, alto_xml_page)
+        # FOR TEST:
+        # Save output xml to file
+        f = open(r"D:\Data\tmp\test.xml", "w") 
+        f.write(alto_xml)
+        f.close()
         # Save output xml to database
         name = os.path.basename(input_file)
         fullpath = os.path.dirname(input_file)
@@ -116,6 +129,7 @@ def convert_djvu_to_xml(input_file=image_file):
             server_hash_sha3_512=server_hash_sha3_512,
             page_number=page_number
             )
+        return (book.ALTO_xml)
 
 
 def convert_file_to_xml(input_file=image_file):
@@ -157,7 +171,7 @@ def convert_file_to_xml(input_file=image_file):
         alto_xml = pytesseract.image_to_alto_xml(image, lang='rus+eng')
         return(alto_xml)
     elif extention == ".pdf":
-        pass
+        pass # TODO: pdf convertion function
     elif (extention == ".djvu") or (extention == ".djv"):
         alto_xml = convert_djvu_to_xml(input_file)
         return(alto_xml)
@@ -187,7 +201,7 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     # If not
     alto_xml = convert_file_to_xml(input_file)
     # Save output xml to file
-    f = open(output_file, "wb")
+    f = open(output_file, "wb") 
     f.write(alto_xml)
     f.close()
     # Save output xml to database

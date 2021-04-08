@@ -5,13 +5,18 @@ import string
 text = "TExt"
 
 #Открываем файл
-#f = open('tmp/text.txt', 'r')
+f = open(r'D:\Data\testdata\text\News.txt', 'rb')
 
 #Считываем текст
-#text = f.read()
+text = f.read()
 
 #Закрываем файл
-#f.close()
+f.close()
+
+print("text=", text)
+print("text.decode('utf-8')=", text.decode('utf-8'))
+
+text = text.decode('utf-8')
 
 #Переводим текст в нижний регистр
 text = text.lower()
@@ -23,8 +28,6 @@ print(string.punctuation)
 
 #Набор символов пунктуации и спецсимволов
 spec_chars = string.punctuation + '\n\xa0«»\t—…'
-
-#Добавить замену дефиса в конце строки пустой строкой
 
 #Удаляем все спецсимволы и символы пунктуации
 text = "".join([ch for ch in text if ch not in spec_chars])
