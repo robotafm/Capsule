@@ -17,6 +17,7 @@ import subprocess as sp
 
 import Capsule.m_BD.BD_lib as BD_lib
 
+djvu_file = r'D:\Data\testdata\djvu\test2_multipage.djvu'
 image_file = r'D:\Data\testdata\img\OCR\tests.png'
 alto_xml_file = r'D:\Data\testdata\xml\text_in_alto.xml'
 result_file = r'D:\Data\testdata\html\result.html'
@@ -61,31 +62,29 @@ def add_page_to_xml(alto_xml, alto_xml_page, page_number=0):
     """    
     # If book empty
     if (alto_xml == None):
-        return(
-            alto_xml_page.decode('utf-8'),
-            1 # 1 page in book
-            )
+        page_dom = xml.dom.minidom.parseString(alto_xml_page)
+        page_dom.getElementsByTagName("Page")[0].setAttribute("ID", 'page_1')
+        alto_xml_page = page_dom.toxml(encoding="utf-8")
+        return(alto_xml_page)
     # If not
-    book_dom = xml.dom.minidom.parse(alto_xml)
-    page_dom = xml.dom.minidom.parse(alto_xml_page)
-    page = page_dom.getElementsByTagName("Page")[page.number-1]
-    # Find last page
+    book_dom = xml.dom.minidom.parseString(alto_xml)
+    page_dom = xml.dom.minidom.parseString(alto_xml_page)
+    page = page_dom.getElementsByTagName("Page")[0]
     if(page_number==0):
+        # Find last page
         page_number = book_dom.getElementsByTagName("Page").length
         # and add page to end
-        book_dom.getElementsByTagName("Layout").appendChild(page)
-    # If page is not last page
+        book_dom.getElementsByTagName("Layout")[0].appendChild(page)
+        page.setAttribute("ID", 'page_%d' % (page_number+1))
+    # If new page is not last page
     else:
         old_page = book_dom.getElementsByTagName("Page")[page_number-1]
-        book_dom.getElementsByTagName("Layout").replaceChild(page, old_page)
-    page.setAttribute("ID", 'page_%d' % page_number)
-    return(
-        book_dom.toxml(encoding="utf-8"), 
-        book_dom.getElementsByTagName("Page").length
-        )
+        book_dom.getElementsByTagName("Layout")[0].replaceChild(page, old_page)
+        page.setAttribute("ID", 'page_%d' % page_number)
+    return(book_dom.toxml(encoding="utf-8"))
 
 
-def convert_djvu_to_xml(input_file=image_file):
+def convert_djvu_to_xml(input_file=djvu_file):
     """
     Converting djvu to ALTO xml.
     """
@@ -104,32 +103,13 @@ def convert_djvu_to_xml(input_file=image_file):
         page_number = 0
         with tempfile.TemporaryDirectory() as temp_folder:
             convert_djvu_to_tiff(input_file, temp_folder)
-            time.sleep(15) #TODO: wait subprocess end
+            time.sleep(5) #TODO: wait subprocess end
             filelist = os.listdir(temp_folder)
             for file in filelist:
                 path = os.path.join(temp_folder, file)
                 alto_xml_page = convert_file_to_xml(path)
-                alto_xml, page_number = add_page_to_xml(alto_xml, alto_xml_page)
-        # FOR TEST:
-        # Save output xml to file
-        f = open(r"D:\Data\tmp\test.xml", "w") 
-        f.write(alto_xml)
-        f.close()
-        # Save output xml to database
-        name = os.path.basename(input_file)
-        fullpath = os.path.dirname(input_file)
-        ALTO_xml = alto_xml
-        book_hash_sha3_512 = hasher_sha3_512.hexdigest()
-        server_hash_sha3_512 = get_current_server_hash()
-        book = BD_lib.add_book_to_database(
-            name=name, 
-            fullpath=fullpath, 
-            ALTO_xml=ALTO_xml, 
-            book_hash_sha3_512=book_hash_sha3_512, 
-            server_hash_sha3_512=server_hash_sha3_512,
-            page_number=page_number
-            )
-        return (book.ALTO_xml)
+                alto_xml = add_page_to_xml(alto_xml, alto_xml_page)
+        return (alto_xml)
 
 
 def convert_file_to_xml(input_file=image_file):
@@ -350,17 +330,9 @@ def get_HTML(folder):
 
 def main():
     """
-    Just convertion from default image file to default HTML 
-    file (and default ALTO xml file).
+    Just for testing functions.
     """
-    # get_xml()
-    # convert_xml_to_HTML()
-
-
-    convert_file_to_xml()
-        # with codecs.open(input_file, "w", "utf-8") as xml_file:
-        # # print("expertise=", expertise[0].writexml(xml_file))
-        # print("doc=", doc.writexml(xml_file, encoding="utf-8"))
+    pass
 
 
 if __name__ == '__main__':
