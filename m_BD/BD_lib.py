@@ -42,7 +42,7 @@ class Book(object):
         self.ALTO_xml = ALTO_xml
         self.book_hash_sha3_512 = book_hash_sha3_512
         self.server_hash_sha3_512 = server_hash_sha3_512
-        self.page_number = 0
+        self.page_number = page_number
 
     def __repr__(self):
         return "<Book('%s','%s', '%s', '%s', '%s', '%s')>" % (

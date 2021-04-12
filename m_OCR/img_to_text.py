@@ -190,13 +190,17 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     ALTO_xml = alto_xml
     book_hash_sha3_512 = hasher_sha3_512.hexdigest()
     server_hash_sha3_512 = get_current_server_hash()
+    # Get page number
+    dom = xml.dom.minidom.parseString(ALTO_xml)
+    page = dom.getElementsByTagName("Page").length
+    # New book
     book = BD_lib.add_book_to_database(
         name=name, 
         fullpath=fullpath, 
         ALTO_xml=ALTO_xml, 
         book_hash_sha3_512=book_hash_sha3_512, 
         server_hash_sha3_512=server_hash_sha3_512,
-        page_number=1 #TODO: multipage
+        page_number=page
         )
     return(alto_xml)
 
@@ -247,7 +251,7 @@ class Page():
 
 def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file, page_number=1):
     """ 
-    Convertion function from ALTO xml to HTML page (TODO:pages).
+    Convertion function from ALTO xml to HTML page.
     """
     dom = xml.dom.minidom.parse(input_file)
     page = Page(number=page_number)
