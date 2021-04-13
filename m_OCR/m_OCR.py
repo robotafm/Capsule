@@ -131,3 +131,72 @@ def prev_page():
         page=current_page,
         page_count=current_book.page_number
         )
+
+@app.route("/start/", methods=['POST'])
+def start():
+    global current_page
+    global current_book
+    current_page -= 1
+    if (current_page < 1):
+        current_page = 1
+    return render_template(
+        'index.html', 
+        m_OCR_name=m_OCR_name, 
+        m_OCR_description=m_OCR_description,
+        button_start=button_start,
+        button_stop=button_stop,
+        button_restart=button_restart,
+        input_file=input_file,
+        button_submit=button_submit,
+        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
+        button_prev_page=button_prev_page,
+        button_next_page=button_next_page,
+        page=current_page,
+        page_count=current_book.page_number
+        )
+
+@app.route("/stop/", methods=['POST'])
+def stop():
+    global current_page
+    global current_book
+    current_page -= 1
+    if (current_page < 1):
+        current_page = 1
+    return render_template(
+        'index.html', 
+        m_OCR_name=m_OCR_name, 
+        m_OCR_description=m_OCR_description,
+        button_start=button_start,
+        button_stop=button_stop,
+        button_restart=button_restart,
+        input_file=input_file,
+        button_submit=button_submit,
+        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
+        button_prev_page=button_prev_page,
+        button_next_page=button_next_page,
+        page=current_page,
+        page_count=current_book.page_number
+        )
+
+@app.route("/restart/", methods=['POST'])
+def restart():
+    global current_page
+    global current_book
+    current_page -= 1
+    if (current_page < 1):
+        current_page = 1
+    return render_template(
+        'index.html', 
+        m_OCR_name=m_OCR_name, 
+        m_OCR_description=m_OCR_description,
+        button_start=button_start,
+        button_stop=button_stop,
+        button_restart=button_restart,
+        input_file=input_file,
+        button_submit=button_submit,
+        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
+        button_prev_page=button_prev_page,
+        button_next_page=button_next_page,
+        page=current_page,
+        page_count=current_book.page_number
+        )

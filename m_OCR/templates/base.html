@@ -10,18 +10,25 @@
 		<h1>{% block m_OCR_name %} {% endblock %}</h1>
 		<div>{% block m_OCR_description %} {% endblock %}</div>
 		</div>
-		<div align="center">
-			<form>
-				<button>{% block button_start %} {% endblock %}</button>
-				<button>{% block button_stop %} {% endblock %}</button>
-				<button>{% block button_restart %} {% endblock %}</button>
+		<div align="center" style="display: inline;">
+			<form action="/start/" method="post">
+				<button name="button_start" type="submit">{% block button_start %} {% endblock %}</button>
+			</form>
+			<form action="/stop/" method="post">
+				<button name="button_stop" type="submit">{% block button_stop %} {% endblock %}</button>
+			</form>
+			<form action="/restart/" method="post">
+				<button name="button_restart" type="submit">{% block button_restart %} {% endblock %}</button>
 			</form>
 		</div>
-		<div align="center">
+		<div align="center" style="display: inline;">
 			<form enctype="multipart/form-data" method="post">
-			<p><input type="file" name="{% block input_file %} {% endblock %}">
-			<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
+				<p><input type="file" name="{% block input_file %} {% endblock %}">
+				<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
 			</form> 
+		</div>
+		<div align="center">
+			<progress value="10" max="100"></progress>
 		</div>
 		<div align="center" style="display: inline;">
 			<form action="/prev_page/" method="post">
@@ -32,7 +39,7 @@
     			<button name="button_next_page" type="submit">{% block button_next_page %} {% endblock %}</button>
 			</form>
 		</div>
-		<div style="position: absolute; top: 150px">
+		<div style="position: absolute; top: 170px">
 		{% block text_page %} {% endblock %}
 		</div>
 	</body>
