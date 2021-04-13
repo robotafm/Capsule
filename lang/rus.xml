@@ -33,5 +33,7 @@
 	<button_stop>Стоп</button_stop>
 	<button_restart>Перезапустить</button_restart>
 	<button_submit>Отправить</button_submit>
+	<button_prev_page>Предыдущая</button_prev_page>
+	<button_next_page>Следующая</button_next_page>
 
 </language>

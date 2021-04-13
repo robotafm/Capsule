@@ -15,7 +15,7 @@ import tempfile
 import time
 import subprocess as sp
 
-import Capsule.m_BD.BD_lib as BD_lib
+import m_BD.BD_lib as BD_lib
 
 djvu_file = r'D:\Data\testdata\djvu\test2_multipage.djvu'
 image_file = r'D:\Data\testdata\img\OCR\tests.png'
@@ -159,7 +159,7 @@ def convert_file_to_xml(input_file=image_file):
         pass
 
 
-def get_xml(input_file=image_file, output_file=alto_xml_file):
+def get_book(input_file=image_file, output_file=alto_xml_file):
     """
     Get book in ALTO xml from database (if exist) or convertation 
     function (if not).
@@ -177,7 +177,7 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         f = open(output_file, "wb")
         f.write(book.ALTO_xml)
         f.close()
-        return(book.ALTO_xml)
+        return(book)
     # If not
     alto_xml = convert_file_to_xml(input_file)
     # Save output xml to file
@@ -190,10 +190,8 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
     ALTO_xml = alto_xml
     book_hash_sha3_512 = hasher_sha3_512.hexdigest()
     server_hash_sha3_512 = get_current_server_hash()
-    # Get page number
     dom = xml.dom.minidom.parseString(ALTO_xml)
-    page = dom.getElementsByTagName("Page").length
-    # New book
+    page = dom.getElementsByTagName("Page").length # Page number
     book = BD_lib.add_book_to_database(
         name=name, 
         fullpath=fullpath, 
@@ -202,7 +200,7 @@ def get_xml(input_file=image_file, output_file=alto_xml_file):
         server_hash_sha3_512=server_hash_sha3_512,
         page_number=page
         )
-    return(alto_xml)
+    return(book)
 
 
 def find_all(a_str, sub):
@@ -243,20 +241,23 @@ def add_div_tag(
 
 
 class Page():
-    def __init__(self, number=0, width=0, height=0, alto_xml=None):
+    def __init__(self, number=0, width=0, height=0, alto_xml=None, HTML=None):
         self.number = number
         self.width = width
         self.height = height
         self.alto_xml = alto_xml
+        self.HTML = HTML
 
-def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file, page_number=1):
+def convert_xml_to_HTML(book, page_number=1):
     """ 
     Convertion function from ALTO xml to HTML page.
     """
-    dom = xml.dom.minidom.parse(input_file)
-    page = Page(number=page_number)
-    page.width = dom.getElementsByTagName("Page")[page.number-1].getAttribute("WIDTH")
-    page.height = dom.getElementsByTagName("Page")[page.number-1].getAttribute("HEIGHT")
+    if(book == None):
+        return(None)
+    dom = xml.dom.minidom.parseString(book.ALTO_xml)
+    page = Page(number=page_number, alto_xml=dom.getElementsByTagName("Page")[page_number-1])
+    page.width = page.alto_xml.getAttribute("WIDTH")
+    page.height = page.alto_xml.getAttribute("HEIGHT")
     # Empty new text
     text = ""
     text = add_div_tag(
@@ -266,7 +267,8 @@ def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file, page_
                    'width: '+page.width+'px; height='+page.height+'px;\"'), 
         )
 
-    lines_of_text = dom.getElementsByTagName("TextLine")
+
+    lines_of_text = page.alto_xml.getElementsByTagName("TextLine")
 
     content = ""
 
@@ -298,11 +300,7 @@ def convert_xml_to_HTML(input_file=alto_xml_file, output_file=result_file, page_
             div_spacer="\n"
             )
         content = ""
-
-    # save output html
-    f = open(output_file, "w")
-    f.write(text)
-    f.close()
+    page.HTML = text
     return(text)
 
 
@@ -315,18 +313,14 @@ def get_HTML(folder):
     directory = os.listdir(folder)
     if(directory!=[]):
         file = directory[0]
+        book = None
         # If file is image file
         if((file.find(".xml")<0) and (file.find(".html")<0)):
-            get_xml(
+            book = get_book(
                 input_file=os.path.join(folder, file),
                 output_file=os.path.join(folder, file+".xml")
-            )
-            return(
-                convert_xml_to_HTML(
-                    input_file=os.path.join(folder, file+".xml"), 
-                    output_file=os.path.join(folder, file+".html")
                 )
-            )
+            return(convert_xml_to_HTML(book))
     else:
         return(None)
 

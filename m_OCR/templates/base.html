@@ -23,6 +23,15 @@
 			<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
 			</form> 
 		</div>
+		<div align="center" style="display: inline;">
+			<form action="/prev_page/" method="post">
+				<button name="button_prev_page" type="submit">{% block button_prev_page %} {% endblock %}</button>
+			</form>
+			<p>{% block page %} {% endblock %}/{% block page_count %} {% endblock %}</p>
+			<form action="/next_page/" method="post">
+    			<button name="button_next_page" type="submit">{% block button_next_page %} {% endblock %}</button>
+			</form>
+		</div>
 		<div style="position: absolute; top: 150px">
 		{% block text_page %} {% endblock %}
 		</div>
