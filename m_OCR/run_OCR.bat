@@ -1,4 +1,4 @@
-start http://127.0.0.1:4905
+start http://127.0.0.1:4905/index
 
 set FLASK_APP=m_OCR.py
 

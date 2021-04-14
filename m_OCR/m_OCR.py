@@ -6,7 +6,7 @@
 # imports:
 import xml.dom.minidom
 import os
-from flask import Flask, render_template, request, Markup
+from flask import Flask, render_template, request, Markup, redirect
 
 import Capsule.m_OCR.img_to_text as img_to_text
 
@@ -42,17 +42,26 @@ input_file="input_file"
 
 current_page = 1
 current_book = None
+current_book_page_count = 0
+path = ""
 # Flask init:
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # m_OCR web page:
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
+    start = request.args.get('start') 
+    stop = request.args.get('stop')
+    restart = request.args.get('restart')
     global current_book
-    book = None
-    page = 0
+    global current_book_page_count
+    global current_page
+    global path
+    book = current_book
+    page = current_page
     page_count = 0
+    progress = 0
     if request.method == 'POST':
         file = request.files[input_file]
         filename = file.filename
@@ -61,6 +70,7 @@ def index():
         clear_upload_folder()
         # Save new file
         file.save(path)
+    if((start=="True") and (path!="")):
         # Get book from file
         book = img_to_text.get_book(
             input_file=path,
@@ -68,8 +78,10 @@ def index():
             )
         current_book = book
         page = 1
+        current_page = page
         page_count = book.page_number
-
+        current_book_page_count = page_count
+        progress = 100
     return render_template(
         'index.html', 
         m_OCR_name=m_OCR_name, 
@@ -83,7 +95,8 @@ def index():
         button_prev_page=button_prev_page,
         button_next_page=button_next_page,
         page=page,
-        page_count=page_count
+        page_count=current_book_page_count,
+        progress = progress
         )
 
 @app.route("/next_page/", methods=['POST'])
@@ -93,110 +106,24 @@ def next_page():
     current_page += 1
     if (current_page > current_book.page_number):
         current_page = current_book.page_number
-    return render_template(
-        'index.html', 
-        m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description,
-        button_start=button_start,
-        button_stop=button_stop,
-        button_restart=button_restart,
-        input_file=input_file,
-        button_submit=button_submit,
-        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
-        button_prev_page=button_prev_page,
-        button_next_page=button_next_page,
-        page=current_page,
-        page_count=current_book.page_number
-        )
+    return redirect('/index')
 
 @app.route("/prev_page/", methods=['POST'])
 def prev_page():
     global current_page
-    global current_book
     current_page -= 1
     if (current_page < 1):
         current_page = 1
-    return render_template(
-        'index.html', 
-        m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description,
-        button_start=button_start,
-        button_stop=button_stop,
-        button_restart=button_restart,
-        input_file=input_file,
-        button_submit=button_submit,
-        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
-        button_prev_page=button_prev_page,
-        button_next_page=button_next_page,
-        page=current_page,
-        page_count=current_book.page_number
-        )
+    return redirect('/index')
 
 @app.route("/start/", methods=['POST'])
 def start():
-    global current_page
-    global current_book
-    current_page -= 1
-    if (current_page < 1):
-        current_page = 1
-    return render_template(
-        'index.html', 
-        m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description,
-        button_start=button_start,
-        button_stop=button_stop,
-        button_restart=button_restart,
-        input_file=input_file,
-        button_submit=button_submit,
-        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
-        button_prev_page=button_prev_page,
-        button_next_page=button_next_page,
-        page=current_page,
-        page_count=current_book.page_number
-        )
+    return redirect('/index?start=True')
 
 @app.route("/stop/", methods=['POST'])
 def stop():
-    global current_page
-    global current_book
-    current_page -= 1
-    if (current_page < 1):
-        current_page = 1
-    return render_template(
-        'index.html', 
-        m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description,
-        button_start=button_start,
-        button_stop=button_stop,
-        button_restart=button_restart,
-        input_file=input_file,
-        button_submit=button_submit,
-        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
-        button_prev_page=button_prev_page,
-        button_next_page=button_next_page,
-        page=current_page,
-        page_count=current_book.page_number
-        )
+    return redirect('/index?stop=True')
 
 @app.route("/restart/", methods=['POST'])
 def restart():
-    global current_page
-    global current_book
-    current_page -= 1
-    if (current_page < 1):
-        current_page = 1
-    return render_template(
-        'index.html', 
-        m_OCR_name=m_OCR_name, 
-        m_OCR_description=m_OCR_description,
-        button_start=button_start,
-        button_stop=button_stop,
-        button_restart=button_restart,
-        input_file=input_file,
-        button_submit=button_submit,
-        text_page=Markup(img_to_text.convert_xml_to_HTML(current_book, current_page)),
-        button_prev_page=button_prev_page,
-        button_next_page=button_next_page,
-        page=current_page,
-        page_count=current_book.page_number
-        )
+    return redirect('/index?restart=True')

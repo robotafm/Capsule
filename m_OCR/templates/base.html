@@ -28,7 +28,7 @@
 			</form> 
 		</div>
 		<div align="center">
-			<progress value="10" max="100"></progress>
+			<progress value="{% block progress %} {% endblock %}" max="100"></progress>
 		</div>
 		<div align="center" style="display: inline;">
 			<form action="/prev_page/" method="post">
@@ -39,7 +39,7 @@
     			<button name="button_next_page" type="submit">{% block button_next_page %} {% endblock %}</button>
 			</form>
 		</div>
-		<div style="position: absolute; top: 170px">
+		<div style="position: absolute; top: 220px">
 		{% block text_page %} {% endblock %}
 		</div>
 	</body>
