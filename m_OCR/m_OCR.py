@@ -38,7 +38,6 @@ button_restart = dom.getElementsByTagName("button_restart")[0].childNodes[0].nod
 button_submit = dom.getElementsByTagName("button_submit")[0].childNodes[0].nodeValue
 button_prev_page = dom.getElementsByTagName("button_prev_page")[0].childNodes[0].nodeValue
 button_next_page = dom.getElementsByTagName("button_next_page")[0].childNodes[0].nodeValue
-input_file="input_file"
 
 current_page = 1
 current_book = None
@@ -64,28 +63,36 @@ def index():
     page = current_page
     page_count = 0
     if request.method == 'POST':
-        file = request.files[input_file]
-        filename = file.filename
-        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         # Clear folder
         clear_upload_folder()
-        # Save new file
-        file.save(path)
-        # Progress bar 10%
-        progress = 10
-    if((start=="True") and (path!="")):
-        # Get book from file
-        book = img_to_text.get_book(
-            input_file=path,
-            output_file=path+".xml"
-            )
-        current_book = book
-        page = 1
-        current_page = page
-        page_count = book.page_number
-        current_book_page_count = page_count
-        # Progress bar 100%
-        progress = 100
+        files = request.files.getlist('input_file')
+        num_of_files = len(files)
+        for file in files:
+            filename = file.filename
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # Save new file
+            file.save(path)
+            # Progress bar 10%
+            progress = 10
+    if(start=="True"):
+        directory = os.listdir(app.config['UPLOAD_FOLDER'])
+        if(directory!=[]):
+            for file in directory:
+                path = os.path.join(app.config['UPLOAD_FOLDER'], file)
+                # Get book from file
+                book = img_to_text.get_book(
+                    input_file=path,
+                    output_file=path+".xml"
+                    )
+                current_book = book
+                page = 1
+                current_page = page
+                page_count = book.page_number
+                current_book_page_count = page_count
+                # Progress bar 100%
+                progress = 100
+            # Clear folder
+            clear_upload_folder()
     return render_template(
         'index.html', 
         m_OCR_name=m_OCR_name, 
@@ -93,7 +100,6 @@ def index():
         button_start=button_start,
         button_stop=button_stop,
         button_restart=button_restart,
-        input_file=input_file,
         button_submit=button_submit,
         text_page=Markup(img_to_text.convert_xml_to_HTML(book, page)),
         button_prev_page=button_prev_page,
@@ -126,9 +132,6 @@ def prev_page():
 
 @app.route("/start/", methods=['POST'])
 def start():
-    global progress
-    # Progress bar 25%
-    progress = 25
     return redirect('/index?start=True')
 
 @app.route("/stop/", methods=['POST'])

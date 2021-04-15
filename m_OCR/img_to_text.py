@@ -181,10 +181,10 @@ def get_book(input_file=image_file, output_file=alto_xml_file):
         return(book)
     # If not
     alto_xml = convert_file_to_xml(input_file)
-    # Save output xml to file
-    f = open(output_file, "wb") 
-    f.write(alto_xml)
-    f.close()
+    # # Save output xml to file
+    # f = open(output_file, "wb") 
+    # f.write(alto_xml)
+    # f.close()
     # Save output xml to database
     name = os.path.basename(input_file)
     fullpath = os.path.dirname(input_file)

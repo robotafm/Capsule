@@ -33,7 +33,7 @@
 	</style>
 	<body>
 		<div align="center">
-		<h1>{% block m_OCR_name %} {% endblock %}</h1>
+		<h1><a href="/index">{% block m_OCR_name %} {% endblock %}</a></h1>
 		<div>{% block m_OCR_description %} {% endblock %}</div>
 		</div>
 		<div align="center" class="btn-group" style="width:100%">
@@ -49,7 +49,7 @@
 		</div>
 		<div align="center">
 			<form enctype="multipart/form-data" method="post">
-				<p><input type="file" name="{% block input_file %} {% endblock %}">
+				<p><input type="file" name="input_file" multiple="">
 				<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
 			</form> 
 		</div>
