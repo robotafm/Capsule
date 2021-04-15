@@ -1,3 +1,6 @@
+import time
+start_time = time.time()
+
 import subprocess as sp
 import os
 import stat
@@ -20,5 +23,7 @@ cmd_args.append(input_file)
 cmd_args.append(output_file)
 print(cmd_args)
 child = sp.Popen(cmd_args)
-
+print("--- %s seconds ---" % (time.time() - start_time))
+child.wait()
+print("--- %s seconds ---" % (time.time() - start_time))
 # print(subprocess.call(comm))

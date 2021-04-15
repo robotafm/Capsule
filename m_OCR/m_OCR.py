@@ -43,6 +43,7 @@ input_file="input_file"
 current_page = 1
 current_book = None
 current_book_page_count = 0
+progress = 0
 path = ""
 # Flask init:
 app = Flask(__name__)
@@ -58,10 +59,10 @@ def index():
     global current_book_page_count
     global current_page
     global path
+    global progress
     book = current_book
     page = current_page
     page_count = 0
-    progress = 0
     if request.method == 'POST':
         file = request.files[input_file]
         filename = file.filename
@@ -70,6 +71,8 @@ def index():
         clear_upload_folder()
         # Save new file
         file.save(path)
+        # Progress bar 10%
+        progress = 10
     if((start=="True") and (path!="")):
         # Get book from file
         book = img_to_text.get_book(
@@ -81,6 +84,7 @@ def index():
         current_page = page
         page_count = book.page_number
         current_book_page_count = page_count
+        # Progress bar 100%
         progress = 100
     return render_template(
         'index.html', 
@@ -101,8 +105,10 @@ def index():
 
 @app.route("/next_page/", methods=['POST'])
 def next_page():
+    global progress
     global current_page
     global current_book
+    progress = 0
     current_page += 1
     if (current_page > current_book.page_number):
         current_page = current_book.page_number
@@ -110,7 +116,9 @@ def next_page():
 
 @app.route("/prev_page/", methods=['POST'])
 def prev_page():
+    global progress
     global current_page
+    progress =0
     current_page -= 1
     if (current_page < 1):
         current_page = 1
@@ -118,6 +126,9 @@ def prev_page():
 
 @app.route("/start/", methods=['POST'])
 def start():
+    global progress
+    # Progress bar 25%
+    progress = 25
     return redirect('/index?start=True')
 
 @app.route("/stop/", methods=['POST'])

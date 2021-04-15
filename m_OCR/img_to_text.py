@@ -55,6 +55,8 @@ def convert_djvu_to_tiff(input_file, folder):
     cmd_args.append(output_file)
     # Run process
     child = sp.Popen(cmd_args)
+    # Wait for finish
+    child.wait()
 
 def add_page_to_xml(alto_xml, alto_xml_page, page_number=0):
     """
@@ -103,7 +105,6 @@ def convert_djvu_to_xml(input_file=djvu_file):
         page_number = 0
         with tempfile.TemporaryDirectory() as temp_folder:
             convert_djvu_to_tiff(input_file, temp_folder)
-            time.sleep(5) #TODO: wait subprocess end
             filelist = os.listdir(temp_folder)
             for file in filelist:
                 path = os.path.join(temp_folder, file)

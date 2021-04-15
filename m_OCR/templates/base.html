@@ -5,23 +5,49 @@
 	<head>
 		<meta charset="utf-8">
 	</head>
+	<style>
+		.btn-group button {
+		    background-color: #00680A; /* Background */
+		    border: 1px solid green; /* Border */
+		    color: white; /* Text */
+		    padding: 10px 24px; /* Padding */
+		    cursor: pointer; /* Pointer/hand icon */
+		    float: left; /* Float the buttons side by side */
+		}
+
+		/* Clear floats (clearfix hack) */
+		.btn-group:after {
+		    content: "";
+		    clear: both;
+		    display: table;
+		}
+
+		.btn-group button:not(:last-child) {
+		    border-right: none; /* Prevent double borders */
+		}
+
+		/* Add a background color on hover */
+		.btn-group button:hover {
+		    background-color: #002102;
+		}
+	</style>
 	<body>
 		<div align="center">
 		<h1>{% block m_OCR_name %} {% endblock %}</h1>
 		<div>{% block m_OCR_description %} {% endblock %}</div>
 		</div>
-		<div align="center" style="display: inline;">
+		<div align="center" class="btn-group" style="width:100%">
 			<form action="/start/" method="post">
-				<button name="button_start" type="submit">{% block button_start %} {% endblock %}</button>
+				<button name="button_start" type="submit" style="width:33.3%">{% block button_start %} {% endblock %}</button>
 			</form>
 			<form action="/stop/" method="post">
-				<button name="button_stop" type="submit">{% block button_stop %} {% endblock %}</button>
+				<button name="button_stop" type="submit" style="width:33.3%">{% block button_stop %} {% endblock %}</button>
 			</form>
 			<form action="/restart/" method="post">
-				<button name="button_restart" type="submit">{% block button_restart %} {% endblock %}</button>
+				<button name="button_restart" type="submit" style="width:33.3%">{% block button_restart %} {% endblock %}</button>
 			</form>
 		</div>
-		<div align="center" style="display: inline;">
+		<div align="center">
 			<form enctype="multipart/form-data" method="post">
 				<p><input type="file" name="{% block input_file %} {% endblock %}">
 				<input type="submit" value="{% block button_submit %} {% endblock %}"></p>
@@ -30,16 +56,18 @@
 		<div align="center">
 			<progress value="{% block progress %} {% endblock %}" max="100"></progress>
 		</div>
-		<div align="center" style="display: inline;">
+		<div align="center" class="btn-group" style="width:100%">
 			<form action="/prev_page/" method="post">
-				<button name="button_prev_page" type="submit">{% block button_prev_page %} {% endblock %}</button>
+				<button name="button_prev_page" type="submit" style="width:50%">{% block button_prev_page %} {% endblock %}</button>
 			</form>
-			<p>{% block page %} {% endblock %}/{% block page_count %} {% endblock %}</p>
 			<form action="/next_page/" method="post">
-    			<button name="button_next_page" type="submit">{% block button_next_page %} {% endblock %}</button>
+    			<button name="button_next_page" type="submit" style="width:50%">{% block button_next_page %} {% endblock %}</button>
 			</form>
 		</div>
-		<div style="position: absolute; top: 220px">
+		<div align="center" style="width:100%">
+			<p>{% block page %} {% endblock %}/{% block page_count %} {% endblock %}</p>
+		</div>
+		<div style="position: absolute; top: 310px">
 		{% block text_page %} {% endblock %}
 		</div>
 	</body>
