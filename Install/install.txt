@@ -1,4 +1,4 @@
-Установка БД и Pandas(скопировать в терминал):
+﻿Установка БД и Pandas(скопировать в терминал):
 python -m pip install pandas
 
 Установка Flask и web-модулей:
@@ -31,3 +31,6 @@ pip install SQLAlchemy
 
 Установка NLP natasha
 pip install natasha
+
+Установка Ddjvu (From DjVuLibre)
+http://djvu.sourceforge.net/doc/index.html

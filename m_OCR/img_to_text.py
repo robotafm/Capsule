@@ -44,8 +44,9 @@ def convert_djvu_to_tiff(input_file, folder):
     """
     output_file = os.path.join(folder, "page%d.tiff") # %d -> page number 
                                                       # (if -eachpage in Ddjvu_cmd)
-    dirpath = r'C:\Program Files (x86)\DjVuLibre'
-    filename = r'ddjvu.exe'
+    dirpath = r'C:\Program Files (x86)\DjVuLibre'     # TODO: remove it hardcode...
+    filename = r'ddjvu.exe'                           # I want to load program from 
+                                                      # database if it not exist
     cmd_args = []
     cmd_args.append(os.path.join(dirpath,filename))
     cmd_args.append('-format=tiff')
